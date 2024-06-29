@@ -1,16 +1,28 @@
 import express from "express"
-
-import { main } from "./connect.js"
+import bodyParser from "body-parser"
+import logger from "./middleware/logger.js"
+import db from "./db.js"
+import {
+  categoryRoutes,
+  itemRoutes,
+  locationRoutes,
+  userRoutes,
+} from "./routes/index.js"
 
 const app = express()
+const port = 5000
 
-const PORT = 5000
+// Middleware
+app.use(express.json())
+app.use(express.urlencoded({ extended: true }))
+app.use(logger)
 
-app.get("/", (req, res) => {
-  main()
-  res.json({ message: "Hello World!!" })
-})
+// Routes
+app.use("/api/users", userRoutes)
+app.use("/api/items", itemRoutes)
+app.use("/api/categories", categoryRoutes)
+app.use("/api/locations", locationRoutes)
 
-app.listen(PORT, () => {
-  console.log(`Server listening on port ${PORT}...`)
+app.listen(port, () => {
+  console.log(`Server listening on port ${port}...`)
 })
