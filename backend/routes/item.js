@@ -61,4 +61,16 @@ router.post("/", async (req, res) => {
   }
 })
 
+router.delete("/:id", async (req, res) => {
+  try {
+    const item = await Item.findOneAndDelete({ _id: req.params.id })
+    if (!item) {
+      return res.status(404).send("Item not found")
+    }
+    res.json({ message: `${item.name} deleted` })
+  } catch (err) {
+    res.status(500).json({ message: err.message })
+  }
+})
+
 export default router
