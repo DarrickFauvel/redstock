@@ -43,6 +43,7 @@ router.post("/", async (req, res) => {
     description: req.body.description,
     imageUrl: req.body.imageUrl,
     itemUrl: req.body.itemUrl,
+    upcCode: req.body.upcCode,
     quantity: req.body.quantity,
     value: req.body.value,
     category,
