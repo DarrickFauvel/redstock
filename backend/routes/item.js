@@ -55,7 +55,7 @@ router.post("/", async (req, res) => {
 
   try {
     const newItem = await item.save()
-    res.status(201).json(newItem)
+    res.status(201).json({ message: `${newItem.name} created` })
   } catch (err) {
     res.status(400).json({ message: err.message })
   }
