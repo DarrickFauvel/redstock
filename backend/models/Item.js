@@ -5,6 +5,7 @@ const itemSchema = new Schema({
   description: { type: String },
   imageUrl: { type: String },
   itemUrl: { type: String },
+  upcCode: { type: String, unique: true },
   quantity: { type: Number, required: true, default: 1 },
   value: { type: Number },
   category: { type: Schema.Types.ObjectId, ref: "Category" },
