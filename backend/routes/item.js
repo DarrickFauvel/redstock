@@ -29,10 +29,14 @@ router.post("/", async (req, res) => {
   const user = await User.findOne({ username: req.body.user })
 
   const category = new Category({ name: req.body.category, user: user._id })
-  await category.save()
+  if (category.name !== req.body.category) {
+    await category.save()
+  }
 
   const location = new Location({ name: req.body.location, user: user._id })
-  await location.save()
+  if (location.name !== req.body.location) {
+    await location.save()
+  }
 
   const item = new Item({
     name: req.body.name,
