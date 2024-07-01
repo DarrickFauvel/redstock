@@ -1,8 +1,6 @@
 import express from "express"
 import cors from "cors"
-import bodyParser from "body-parser"
 import logger from "./middleware/logger.js"
-import db from "./db.js"
 import {
   categoryRoutes,
   itemRoutes,
