@@ -16,24 +16,24 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 
-import { createUser, updateUser } from "@/utils/actions/user"
+import { createLocation, updateLocation } from "@/utils/actions/location"
 import { useEffect, useState } from "react"
 
 const formSchema = z.object({
-  name: z.string().min(2).max(50),
-  email: z.string().email().max(50),
   id: z.string(),
+  name: z.string().min(2).max(50),
+  description: z.string().min(2).max(50),
 })
 
-const UserForm = ({ user = { id: "", name: "", email: "" } }) => {
+const LocationForm = ({ location = { id: "", name: "", description: "" } }) => {
   const [isSubmitSuccessful, setIsSubmitSuccessful] = useState(false)
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      name: user.name,
-      email: user.email,
-      id: user.id,
+      id: location.id,
+      name: location.name,
+      description: location.description,
     },
   })
 
@@ -43,10 +43,10 @@ const UserForm = ({ user = { id: "", name: "", email: "" } }) => {
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     if (!values.id) {
-      await createUser(values)
+      await createLocation(values)
       setIsSubmitSuccessful(true)
     } else {
-      await updateUser(values)
+      await updateLocation(values)
     }
   }
 
@@ -80,12 +80,12 @@ const UserForm = ({ user = { id: "", name: "", email: "" } }) => {
         />
         <FormField
           control={form.control}
-          name="email"
+          name="description"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Email</FormLabel>
+              <FormLabel>Description</FormLabel>
               <FormControl>
-                <Input placeholder="email" {...field} />
+                <Input placeholder="description" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -96,4 +96,4 @@ const UserForm = ({ user = { id: "", name: "", email: "" } }) => {
     </Form>
   )
 }
-export default UserForm
+export default LocationForm
