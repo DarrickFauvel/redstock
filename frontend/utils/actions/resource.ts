@@ -21,8 +21,8 @@ export const fetchResource = async (modelName: any) => {
   }
 }
 
-export const fetchSingleLocation = async (id: string) => {
-  return await prisma.location.findUnique({
+export const fetchSingleResource = async (modelName: string, id: string) => {
+  return await prisma[modelName].findUnique({
     where: {
       id,
     },
@@ -30,10 +30,11 @@ export const fetchSingleLocation = async (id: string) => {
 }
 
 export const deleteResource = async (modelName: any, id: string) => {
+  const resourcePath = "/" + modelName + "s"
   await prisma[modelName].delete({
     where: {
       id,
     },
   })
-  revalidatePath("/locations")
+  revalidatePath(resourcePath)
 }
