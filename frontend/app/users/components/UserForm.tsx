@@ -1,10 +1,30 @@
 "use client"
 
+import { cn } from "@/lib/utils"
+import { useMediaQuery } from "usehooks-ts"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 
 import { Button } from "@/components/ui/button"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
+import {
+  Drawer,
+  DrawerClose,
+  DrawerContent,
+  DrawerDescription,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from "@/components/ui/drawer"
 import {
   Form,
   FormControl,
@@ -15,6 +35,7 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
 
 import { createUser, updateUser } from "@/utils/actions/user"
 import { useEffect, useState } from "react"
@@ -26,16 +47,54 @@ const formSchema = z.object({
 })
 
 const UserForm = ({ user = { id: "", name: "", email: "" } }) => {
-  const [isSubmitSuccessful, setIsSubmitSuccessful] = useState(false)
+  const [open, setOpen] = useState(false)
+  const isDesktop = useMediaQuery("(min-width: 768px)")
 
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      name: user.name,
-      email: user.email,
-      id: user.id,
-    },
-  })
+  if (isDesktop) {
+    return (
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogTrigger asChild>
+          <Button variant="outline">Add User</Button>
+        </DialogTrigger>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>Add User</DialogTitle>
+            <DialogDescription>
+              Add a user here. Click save when you're done.
+            </DialogDescription>
+          </DialogHeader>
+          <UForm />
+        </DialogContent>
+      </Dialog>
+    )
+  }
+
+  return (
+    <Drawer open={open} onOpenChange={setOpen}>
+      <DrawerTrigger asChild>
+        <Button variant="outline">Add User</Button>
+      </DrawerTrigger>
+      <DrawerContent>
+        <DrawerHeader className="text-left">
+          <DrawerTitle>Add User</DrawerTitle>
+          <DrawerDescription>
+            Add a user here. Click save when you're done.
+          </DrawerDescription>
+        </DrawerHeader>
+        <UForm className="px-4" />
+        <DrawerFooter className="pt-2">
+          <DrawerClose asChild>
+            <Button variant="outline">Cancel</Button>
+          </DrawerClose>
+        </DrawerFooter>
+      </DrawerContent>
+    </Drawer>
+  )
+}
+
+function UForm({ className }: React.ComponentProps<"form">) {
+  const [isSubmitSuccessful, setIsSubmitSuccessful] = useState(false)
+  const [user, setUser] = useState({ name: "", email: "", id: "" })
 
   useEffect(() => {
     form.reset()
@@ -49,6 +108,15 @@ const UserForm = ({ user = { id: "", name: "", email: "" } }) => {
       await updateUser(values)
     }
   }
+
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      name: user.name,
+      email: user.email,
+      id: user.id,
+    },
+  })
 
   return (
     <Form {...form}>
@@ -72,7 +140,12 @@ const UserForm = ({ user = { id: "", name: "", email: "" } }) => {
             <FormItem>
               <FormLabel>Name</FormLabel>
               <FormControl>
-                <Input placeholder="name" {...field} />
+                <Input
+                  placeholder="name"
+                  {...field}
+                  value={user.name}
+                  onChange={(e) => setUser(e.target.value)}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -85,15 +158,21 @@ const UserForm = ({ user = { id: "", name: "", email: "" } }) => {
             <FormItem>
               <FormLabel>Email</FormLabel>
               <FormControl>
-                <Input placeholder="email" {...field} />
+                <Input
+                  placeholder="email"
+                  {...field}
+                  value={user.email}
+                  onChange={(e) => setUser(e.target.value)}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
-        <Button type="submit">Submit</Button>
+        <Button type="submit">Save</Button>
       </form>
     </Form>
   )
 }
+
 export default UserForm
