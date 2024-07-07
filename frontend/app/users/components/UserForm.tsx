@@ -102,11 +102,19 @@ function UForm({ className }: React.ComponentProps<"form">) {
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     if (!values.id) {
-      await createUser(values)
+      console.log(values)
+      // await createUser(values)
       setIsSubmitSuccessful(true)
     } else {
       await updateUser(values)
     }
+  }
+
+  const handleChamge = (e) => {
+    setUser((prev) => ({
+      ...prev,
+      [e.target.name]: e.target.value,
+    }))
   }
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -144,7 +152,7 @@ function UForm({ className }: React.ComponentProps<"form">) {
                   placeholder="name"
                   {...field}
                   value={user.name}
-                  onChange={(e) => setUser(e.target.value)}
+                  onChange={handleChamge}
                 />
               </FormControl>
               <FormMessage />
@@ -162,7 +170,7 @@ function UForm({ className }: React.ComponentProps<"form">) {
                   placeholder="email"
                   {...field}
                   value={user.email}
-                  onChange={(e) => setUser(e.target.value)}
+                  onChange={handleChamge}
                 />
               </FormControl>
               <FormMessage />
